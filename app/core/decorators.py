@@ -4,6 +4,11 @@ from flask import request
 
 
 def log_and_validate(func):
+    """
+    Example of decorator. Not used right now anywhere.
+    :param func:
+    :return:
+    """
     @functools.wraps(func)
     def wrapper_decorator(*args, **kwargs):
         # Do something before
