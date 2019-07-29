@@ -12,12 +12,10 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-    """ DevelopmentConfig class """
-
+    """ Configuration for Dev Environment """
     DEBUG = True
 
 
 config_by_name = dict(
-
     dev=DevelopmentConfig
 )

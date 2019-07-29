@@ -42,6 +42,7 @@ class CatService:
     def get_cats():
         """service method to fetch all cats """
         resp = CatsResponse()
+
         resp.cats = CatService._create_dummy_cats()
         resp.description = 'This is list of cats'
 
