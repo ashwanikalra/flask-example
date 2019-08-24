@@ -31,6 +31,7 @@ class CatDataDTO:
 
 class CatParentDTO:
     """ DTO to store the details of parent cat """
+
     def __init__(self, name, gender):
         self.name = name
         self.gender = gender
@@ -45,12 +46,12 @@ class CatService:
         resp = CatsResponse()
 
         resp.cats = CatService._create_dummy_cats()
+
         resp.description = 'This is list of cats'
 
         return resp
 
     @staticmethod
-
     def get_cached_cats():
         """service method to fetch all cats """
         resp = CatsResponse()

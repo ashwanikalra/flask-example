@@ -30,6 +30,5 @@ def create_app(config_name):
     # request_finished.connect(log_response, flask_app)
 
     mycache.init_app(flask_app)
-    # flask_app.cctool_cache = mycache
 
     return flask_app

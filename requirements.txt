@@ -5,3 +5,4 @@ flask-restplus==0.12.1
 blinker==1.4
 #json-logging==1.0.2
 Flask-Caching==1.7.2
+Flask-Testing==0.7.1
