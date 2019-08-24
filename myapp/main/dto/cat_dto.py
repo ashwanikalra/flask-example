@@ -4,7 +4,8 @@ from flask_restplus import fields, Namespace
 class CatDTO:
     """ DTO  for all kindts of Cat responses """
     cats_api = Namespace("cats", description="cats api")
-    cats_cached_api = Namespace("cachedcats", description="cached cats api")
+
+    cats_cached_api = Namespace("cats/cachedcats", description="cached cats api")
 
     cat_parent = cats_api.model('parent', {
         'parent_name': fields.String,

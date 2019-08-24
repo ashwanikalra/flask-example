@@ -7,12 +7,12 @@ Module cotains class for exposing API for cats
 from flask import request
 from flask_restplus import Resource
 
-
 from myapp.main.cats.cat_converter import CatConverter
 from myapp.main.cats.cats_service import CatService
 from myapp.main.dto.cat_dto import CatDTO
 
 cats_api = CatDTO.cats_api
+cats_cached_api = CatDTO.cats_cached_api
 
 # private variables for module
 _cat_service = CatService()
@@ -51,14 +51,14 @@ class Cat(Resource):
         # todo return the success status with http code
 
 
-# @cats_api.route('/')
-# class CachedCat(Resource):
-#     @cats_api.marshal_with(_catDTO.catResponse, envelope='Response')
-#     @CatDTO.cats_cached_api.route('cachedcats')
-#     # @mycache.cached(key_prefix=get_key(request))
-#     def get_cats(self):
-#         """
-#         method return the list of cats when get request is given.
-#         :return: CatResponse json
-#         """
-#         return _cat_service.get_cats()
+@cats_cached_api.route('/')
+class CachedCat(Resource):
+    @cats_api.marshal_with(_catDTO.catResponse, envelope='Response')
+    # @CatDTO.cats_cached_api.route('cachedcats')
+    # @mycache.cached(key_prefix=get_key(request))
+    def get(self):
+        """
+        method return the list of cats when get request is given.
+        :return: CatResponse json
+        """
+        return _cat_service.get_cats()
