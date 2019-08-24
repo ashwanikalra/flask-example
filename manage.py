@@ -1,15 +1,19 @@
 from flask_script import Manager
-from app import create_app
 
-app = create_app('dev')
+from myapp import zoo_blueprint
+from myapp.main import create_app
 
-manager = Manager(app)
+_flask_app = create_app('dev')
+_flask_app.register_blueprint(zoo_blueprint)
+# global cache object
+
+manager = Manager(_flask_app)
 
 
 @manager.command
 def run():
     """ This will execute the application """
-    app.run(host='localhost', port=5000)
+    _flask_app.run(host='localhost', port=5000)
 
 
 if __name__ == '__main__':
