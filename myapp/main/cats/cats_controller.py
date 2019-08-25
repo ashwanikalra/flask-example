@@ -36,8 +36,8 @@ class Cat(Resource):
         method return the list of cats when get request is given.
         :return: CatResponse json
         """
-
-        return _cat_service.get_cats()
+        cat_age = int(request.args.get("age"))
+        return _cat_service.get_cats(cat_age)
 
     @cats_api.expect(_catDTO.cat_create_req, validate=True)
     def post(self):
@@ -62,4 +62,5 @@ class CachedCat(Resource):
         :return: CatResponse json
         """
         mycache.get("cats")
-        return _cat_service.get_cats()
+        cat_age = request.get("age")
+        return _cat_service.get_cats(cat_age)

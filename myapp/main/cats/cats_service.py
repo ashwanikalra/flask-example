@@ -4,8 +4,7 @@
 Module contain service and other supporting classes
 
 """
-
-from myapp.main.model.cat_model import CatDO, CatParentDO
+from myapp.main.cats.cat_dao import CatDAO
 
 
 class CatsResponse:
@@ -14,10 +13,12 @@ class CatsResponse:
     def __init__(self, desc, cats):
         self.description = desc
         self.cats = cats
+        self.no_of_cats = 0
 
     def __init__(self, ):
         self.description = ''
         self.cats = []
+        self.no_of_cats = 0
 
 
 class CatDataDTO:
@@ -41,14 +42,13 @@ class CatService:
     """ Service class for managing the cat resources """
 
     @staticmethod
-    def get_cats():
+    def get_cats(age):
         """service method to fetch all cats """
         resp = CatsResponse()
-
-        resp.cats = CatService._create_dummy_cats()
-
+        cats = CatDAO.find_by_age(age)
+        resp.cats = cats
+        resp.no_of_cats = len(cats)
         resp.description = 'This is list of cats'
-
         return resp
 
     @staticmethod
@@ -56,7 +56,7 @@ class CatService:
         """service method to fetch all cats """
         resp = CatsResponse()
 
-        resp.cats = CatService._create_dummy_cats()
+        # resp.cats = CatService._get_dummy_cats()
         resp.description = 'This is list of cats'
 
         return resp
@@ -65,13 +65,3 @@ class CatService:
     def create_cat(cat_dto):
         """service method to create cat """
         name = cat_dto.name
-
-    @staticmethod
-    def _create_dummy_cats():
-        """ private method to returns dummy cats """
-        cats = []
-        for i in range(3):
-            parent = CatParentDO('Meow Parent' + str(i), 'M')
-            cat = CatDO('Meow ' + str(i), i, parent)
-            cats.append(cat)
-        return cats
