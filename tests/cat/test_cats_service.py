@@ -10,6 +10,9 @@ from myapp.main.model.cat_model import CatParentDO, CatDO
 
 
 class CatServiceTest(TestCase):
+    """
+    Test class testing the Cat Service class
+    """
 
     def create_app(self):
         """
