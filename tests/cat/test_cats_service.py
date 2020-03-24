@@ -1,6 +1,7 @@
 from unittest import skip
 from unittest.mock import patch, MagicMock
 
+import numpy as np
 from flask_testing import TestCase
 
 from myapp.main import create_app
@@ -64,19 +65,19 @@ class CatServiceTest(TestCase):
         cat = CatDO('Meow 1', 1, parent)
         # when call goes to this method, return some dummy value
         CatDAO.find_by_age = MagicMock(return_value=[cat])
-        resp = CatService.get_cats(2)
+        resp = CatService.get_cats(1)
 
         # traditional checks
         assert resp.description == "This is list of cats"
         assert resp.no_of_cats == 1
 
         # checks if mock was called  and how
-        CatDAO.find_by_age.assert_called_once_with(2)
+        CatDAO.find_by_age.assert_called_once_with(1)
 
     @skip("correct it later")
     def test_how_to_ignore(self):
-        """
-        Shows how to correct it later
-        :return:
-        """
-        pass
+        a = np.array([[1, 1]])
+
+        print(a.shape)
+        a = np.squeeze(a)
+        print(a, a.shape)

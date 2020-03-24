@@ -62,6 +62,6 @@ class CatService:
         return resp
 
     @staticmethod
-    def create_cat(cat_dto):
+    def create_cat(cat_dict):
         """service method to create cat """
-        name = cat_dto.name
+        name = cat_dict.name

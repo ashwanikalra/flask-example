@@ -8,7 +8,6 @@ from flask import request
 from flask_restplus import Resource
 
 from myapp.main import mycache
-from myapp.main.cats.cat_converter import CatConverter
 from myapp.main.cats.cats_service import CatService
 from myapp.main.dto.cat_dto import CatDTO
 
@@ -30,6 +29,9 @@ class Cat(Resource):
     Controller class for exposing the APIs for cats
     """
 
+    @cats_api.doc("get Cats filtered by age",
+                  params={'age': "age of the cat to filter by"}
+                  )
     @cats_api.marshal_with(_catDTO.catResponse, envelope='Response')
     def get(self):
         """
@@ -39,15 +41,16 @@ class Cat(Resource):
         cat_age = int(request.args.get("age"))
         return _cat_service.get_cats(cat_age)
 
-    @cats_api.expect(_catDTO.cat_create_req, validate=True)
+    @cats_api.doc('Create new cat')
+    @cats_api.expect(_catDTO.cat, validate=True)
     def post(self):
         """
         method handles the post request to create a cat object
         :return: status
         """
         # args = parser.parse_args()
-        cat_dto = CatConverter.get_cat(request.json)
-        _cat_service.create_cat(cat_dto)
+        cat_dict = request.json
+        _cat_service.create_cat(cat_dict)
 
         # todo return the success status with http code
 
@@ -63,4 +66,5 @@ class CachedCat(Resource):
         """
         mycache.get("cats")
         cat_age = request.get("age")
+
         return _cat_service.get_cats(cat_age)

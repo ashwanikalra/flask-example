@@ -18,6 +18,8 @@ class DevelopmentConfig(Config):
     # Flask-Caching related configs
     CACHE_TYPE = "simple"
     CACHE_DEFAULT_TIMEOUT = 300
+    # get this from environment
+    JWT_SECRET_KEY = '@#$%^@#$'
 
 
 config_by_name = dict(

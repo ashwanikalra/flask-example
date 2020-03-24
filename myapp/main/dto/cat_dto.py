@@ -15,7 +15,9 @@ class CatDTO:
     cat = cats_api.model('cat', {
         'name': fields.String(),
         'age': fields.Integer(min=2),
-        'parent': fields.Nested(cat_parent)
+        'color': fields.String(description="color of cat"),
+        'breed': fields.String(description="breed")
+
     })
 
     catResponse = cats_api.model('CatsResponse', {
