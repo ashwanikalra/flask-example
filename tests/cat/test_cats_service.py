@@ -5,9 +5,8 @@ import numpy as np
 from flask_testing import TestCase
 
 from myapp.main import create_app
-from myapp.main.cats.cat_dao import CatDAO
 from myapp.main.cats.cats_service import CatService
-from myapp.main.model.cat_model import CatParentDO, CatDO
+from myapp.main.model.cat_model import CatDO
 
 
 class CatServiceTest(TestCase):
@@ -24,7 +23,7 @@ class CatServiceTest(TestCase):
         app.config['TESTING'] = True
         return app
 
-    @patch("myapp.main.cats.cat_dao.CatDAO.find_by_age")
+    @patch("myapp.main.model.cat_model.CatDO.find_by_age")
     def test_get_cats(self, mock_find_by_age):
         """
         Test using Patching decorator
@@ -32,8 +31,7 @@ class CatServiceTest(TestCase):
         :return: None
         """
 
-        parent = CatParentDO('Meow Parent1', 'M')
-        cat = CatDO('Meow 1', 1, parent)
+        cat = CatDO('Meow 1', 20, 'blue', 'english')
         # when call goes to this method return some dummy value
         mock_find_by_age.return_value = [cat]
 
@@ -41,8 +39,7 @@ class CatServiceTest(TestCase):
         resp = mycat_ser.get_cats(2)
 
         # traditional checks
-        assert resp.description == "This is list of cats"
-        assert resp.no_of_cats == 1
+        assert len(resp) > 0
 
         # checks if mock was called
         mock_find_by_age.assert_called_with(2)
@@ -61,18 +58,17 @@ class CatServiceTest(TestCase):
         Test Using MagicMock
         :return: None
         """
-        parent = CatParentDO('Meow Parent1', 'M')
-        cat = CatDO('Meow 1', 1, parent)
+
+        cat = CatDO('Meow 1', 20, 'blue', 'english')
         # when call goes to this method, return some dummy value
-        CatDAO.find_by_age = MagicMock(return_value=[cat])
+        CatDO.find_by_age = MagicMock(return_value=[cat])
         resp = CatService.get_cats(1)
 
         # traditional checks
-        assert resp.description == "This is list of cats"
-        assert resp.no_of_cats == 1
+        assert len(resp) > 0
 
         # checks if mock was called  and how
-        CatDAO.find_by_age.assert_called_once_with(1)
+        CatDO.find_by_age.assert_called_once_with(1)
 
     @skip("correct it later")
     def test_how_to_ignore(self):

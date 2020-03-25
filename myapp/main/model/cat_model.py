@@ -24,13 +24,18 @@ class CatDO(db.Model):
         self.color = color
         self.breed = breed
 
-    @property
-    def get_json(self):
-        """Return object data in easily serializable format"""
-        return {
-            'id': self.cat_id,
-            'name': self.name,
-            'age': self.age,
-            'color': self.color,
-            'breed': self.breed
-        }
+    @staticmethod
+    def find_by_age(age):
+        if age:
+            cats = db.session.query(CatDO).filter(CatDO.age >= age).all()
+        else:
+            cats = db.session.query(CatDO).all()
+
+        return cats
+
+    @staticmethod
+    def create(cat_dict):
+        cat_do = CatDO(cat_dict['name'], cat_dict['age'], cat_dict['color'], cat_dict['breed'])
+        db.session.add(cat_do)
+        db.session.commit()
+        return cat_do

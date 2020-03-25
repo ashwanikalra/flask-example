@@ -46,11 +46,11 @@ class Cat(Resource):
         # args = parser.parse_args()
         cat_dict = request.json
         try:
-            _cat_service.create_cat(cat_dict)
-            return self._get_create_response()
+            cat_do = _cat_service.create_cat(cat_dict)
+            return self._get_create_response(cat_do, False)
         except Exception as ex:
             print(ex)
-            return self._get_create_response(True)
+            return self._get_create_response(None, True)
 
     @staticmethod
     def _get_cats_response(cats):
@@ -70,7 +70,7 @@ class Cat(Resource):
         return response
 
     @staticmethod
-    def _get_create_response(is_error=False):
+    def _get_create_response(cat, is_error=False):
         if is_error:
             resp_dict = dict()
             message = dict()
@@ -85,7 +85,7 @@ class Cat(Resource):
             message = dict()
             data = dict()
             message['type'] = 'info'
-            message['text'] = 'Success'
+            message['text'] = 'Success. Cat with name {name} created'.format(name=cat.name)
             data['message'] = message
             resp_dict['response'] = data
             return resp_dict

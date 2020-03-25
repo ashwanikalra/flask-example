@@ -4,7 +4,6 @@
 Module contain service and other supporting classes
 
 """
-from myapp.main import db
 from myapp.main.model.cat_model import CatDO
 
 
@@ -18,10 +17,7 @@ class CatService:
         :param age:
         :return: list of cats meeting criteria
         """
-        if age:
-            cats = db.session.query(CatDO).filter(CatDO.age >= age).all()
-        else:
-            cats = db.session.query(CatDO).all()
+        cats = CatDO.find_by_age(age)
 
         cats_list = list()
         for cat in cats:
@@ -37,6 +33,4 @@ class CatService:
 
     @staticmethod
     def create_cat(cat_dict):
-        cat_do = CatDO(cat_dict['name'], cat_dict['age'], cat_dict['color'], cat_dict['breed'])
-        db.session.add(cat_do)
-        db.session.commit()
+        return CatDO.create(cat_dict)
