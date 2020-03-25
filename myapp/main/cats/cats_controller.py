@@ -31,9 +31,13 @@ class Cat(Resource):
         method return the list of cats when get request is given.
         :return: CatResponse json
         """
-        cat_age = int(request.args.get("age"))
-        cats = _cat_service.get_cats(cat_age)
+        age = request.args.get("age")
+        if age:
+            cat_age = int(age)
+        else:
+            cat_age = -1
 
+        cats = _cat_service.get_cats(cat_age)
         return self._get_cats_response(cats)
 
     @cats_api.doc('Create new cat')

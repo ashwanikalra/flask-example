@@ -18,7 +18,10 @@ class CatService:
         :return: list of cats meeting criteria
         """
         cats = CatDO.find_by_age(age)
+        return CatService._transform_resp(cats)
 
+    @staticmethod
+    def _transform_resp(cats):
         cats_list = list()
         for cat in cats:
             cat_dict = dict()
@@ -28,7 +31,6 @@ class CatService:
             cat_dict['color'] = cat.color
             cat_dict['breed'] = cat.breed
             cats_list.append(cat_dict)
-
         return cats_list
 
     @staticmethod
