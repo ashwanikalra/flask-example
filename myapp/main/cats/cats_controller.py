@@ -7,20 +7,14 @@ Module cotains class for exposing API for cats
 from flask import request
 from flask_restplus import Resource
 
-from myapp.main import mycache
 from myapp.main.cats.cats_service import CatService
 from myapp.main.dto.cat_dto import CatDTO
 
 cats_api = CatDTO.cats_api
-cats_cached_api = CatDTO.cats_cached_api
 
 # private variables for module
 _cat_service = CatService()
 _catDTO = CatDTO()
-
-
-def get_key(request):
-    return "cats"
 
 
 @cats_api.route('/')
@@ -30,19 +24,20 @@ class Cat(Resource):
     """
 
     @cats_api.doc("get Cats filtered by age",
-                  params={'age': "age of the cat to filter by"}
+                  params={'age': "return the cats whose age >= given age"}
                   )
-    @cats_api.marshal_with(_catDTO.catResponse, envelope='Response')
     def get(self):
         """
         method return the list of cats when get request is given.
         :return: CatResponse json
         """
         cat_age = int(request.args.get("age"))
-        return _cat_service.get_cats(cat_age)
+        cats = _cat_service.get_cats(cat_age)
+
+        return self._get_cats_response(cats)
 
     @cats_api.doc('Create new cat')
-    @cats_api.expect(_catDTO.cat, validate=True)
+    @cats_api.expect(_catDTO.cat_create_req, validate=True)
     def post(self):
         """
         method handles the post request to create a cat object
@@ -50,21 +45,47 @@ class Cat(Resource):
         """
         # args = parser.parse_args()
         cat_dict = request.json
-        _cat_service.create_cat(cat_dict)
+        try:
+            _cat_service.create_cat(cat_dict)
+            return self._get_create_response()
+        except Exception as ex:
+            print(ex)
+            return self._get_create_response(True)
 
-        # todo return the success status with http code
-
-
-@cats_cached_api.route('/')
-class CachedCat(Resource):
-
-    @cats_api.marshal_with(_catDTO.catResponse, envelope='Response')
-    def get(self):
+    @staticmethod
+    def _get_cats_response(cats):
         """
-        method return the list of cats when get request is given.
-        :return: CatResponse json
+        creates a response json
+        :param cats:
+        :return:
         """
-        mycache.get("cats")
-        cat_age = request.get("age")
+        response = dict()
+        data = dict()
+        message = dict()
+        message['type'] = 'info'
+        message['text'] = 'Success'
+        data['message'] = message
+        data['cats'] = cats
+        response['response'] = data
+        return response
 
-        return _cat_service.get_cats(cat_age)
+    @staticmethod
+    def _get_create_response(is_error=False):
+        if is_error:
+            resp_dict = dict()
+            message = dict()
+            data = dict()
+            message['type'] = 'error'
+            message['text'] = 'Some error occured, please see logs'
+            data['message'] = message
+            resp_dict['response'] = data
+            return resp_dict
+        else:
+            resp_dict = dict()
+            message = dict()
+            data = dict()
+            message['type'] = 'info'
+            message['text'] = 'Success'
+            data['message'] = message
+            resp_dict['response'] = data
+            return resp_dict

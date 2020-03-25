@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_restplus import Api
 
-from myapp.main.cats.cats_controller import cats_api, cats_cached_api
+from myapp.main.cats.cats_controller import cats_api
 from myapp.main.core.logger_util import MyLogger
 from myapp.main.dogs.dogs_controller import dogs_api
 
@@ -15,5 +15,4 @@ api = Api(zoo_blueprint,
           )
 
 api.add_namespace(cats_api)
-api.add_namespace(cats_cached_api)
 api.add_namespace(dogs_api)
