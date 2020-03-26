@@ -18,21 +18,14 @@ class CatService:
         :return: list of cats meeting criteria
         """
         cats = CatDO.find_by_age(age)
-        return CatService._transform_resp(cats)
+        return cats
 
     @staticmethod
-    def _transform_resp(cats):
-        cats_list = list()
-        for cat in cats:
-            cat_dict = dict()
-            cat_dict['id'] = cat.cat_id
-            cat_dict['name'] = cat.name
-            cat_dict['age'] = cat.age
-            cat_dict['color'] = cat.color
-            cat_dict['breed'] = cat.breed
-            cats_list.append(cat_dict)
-        return cats_list
+    def get_cats_fetchmany(age):
+        cats = CatDO.find_by_age_fetchmany(age)
+        return cats
 
     @staticmethod
     def create_cat(cat_dict):
         return CatDO.create(cat_dict)
+        # CatDO.create_bulk(cat_dict)

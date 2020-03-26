@@ -5,6 +5,7 @@ Module contains cat related DB model classes.
 
 """
 from myapp.main import db
+from myapp.main.util import timeit
 
 
 class CatDO(db.Model):
@@ -25,13 +26,39 @@ class CatDO(db.Model):
         self.breed = breed
 
     @staticmethod
-    def find_by_age(age):
-        if age:
-            cats = db.session.query(CatDO).filter(CatDO.age >= age).all()
-        else:
-            cats = db.session.query(CatDO).all()
+    def _transform_resp(cats):
+        """
+        return dictionary of cats
+        :param cats:
+        :return: dict of cats
+        """
+        cats_list = list()
+        for cat in cats:
+            cat_dict = dict()
+            cat_dict['id'] = cat.cat_id
+            cat_dict['name'] = cat.name
+            cat_dict['age'] = cat.age
+            cat_dict['color'] = cat.color
+            cat_dict['breed'] = cat.breed
+            cats_list.append(cat_dict)
+        return cats_list
 
-        return cats
+    @staticmethod
+    @timeit
+    def find_by_age(age):
+        cats = db.session.query(CatDO).filter(CatDO.age >= age).all()
+        return CatDO._transform_resp(cats)
+
+    @staticmethod
+    @timeit
+    def find_by_age_fetchmany(age):
+        """
+        Uses yield_per to better process large result
+        :param age:
+        :return:
+        """
+        result = db.session.query(CatDO).yield_per(1000).filter(CatDO.age >= age)
+        return CatDO._transform_resp(result)
 
     @staticmethod
     def create(cat_dict):
@@ -39,3 +66,19 @@ class CatDO(db.Model):
         db.session.add(cat_do)
         db.session.commit()
         return cat_do
+
+    @staticmethod
+    def create_bulk(cat_dict):
+        """
+        Just to create dummy data in buld for processing huge result set
+        :param cat_dict:
+        :return:
+        """
+        cat_list = list()
+        for i in range(10000):
+            cat_do = CatDO(cat_dict['name'] + str(i), cat_dict['age'] + i, cat_dict['color'] + str(i),
+                           cat_dict['breed'] + str(i))
+            cat_list.append(cat_do)
+
+        db.session.bulk_save_objects(cat_list)
+        db.session.commit()

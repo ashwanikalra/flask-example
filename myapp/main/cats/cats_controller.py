@@ -9,6 +9,7 @@ from flask_restplus import Resource
 
 from myapp.main.cats.cats_service import CatService
 from myapp.main.dto.cat_dto import CatDTO
+from myapp.main.util import code_profiler
 
 cats_api = CatDTO.cats_api
 
@@ -26,6 +27,7 @@ class Cat(Resource):
     @cats_api.doc("get Cats filtered by age",
                   params={'age': "return the cats whose age >= given age"}
                   )
+    @code_profiler
     def get(self):
         """
         method return the list of cats when get request is given.
@@ -93,3 +95,28 @@ class Cat(Resource):
             data['message'] = message
             resp_dict['response'] = data
             return resp_dict
+
+
+@cats_api.route('/fetchmany')
+class CatFetchMany(Resource):
+    """
+    Controller class for exposing the APIs for cats
+    """
+
+    @cats_api.doc("get Cats filtered by age",
+                  params={'age': "return the cats whose age >= given age"}
+                  )
+    @code_profiler
+    def get(self):
+        """
+        method return the list of cats when get request is given.
+        :return: CatResponse json
+        """
+        age = request.args.get("age")
+        if age:
+            cat_age = int(age)
+        else:
+            cat_age = -1
+
+        cats = _cat_service.get_cats_fetchmany(cat_age)
+        return cats
