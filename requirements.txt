@@ -1,5 +1,5 @@
 Flask==1.0.3
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 flask-restplus==0.12.1
 #for signals
 blinker==1.4
